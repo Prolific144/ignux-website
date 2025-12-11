@@ -1,3 +1,4 @@
-@import './styles/theme.css';
-@import './styles/globals.css';
-@import './styles/components.css';
+/* CSS Imports - Organized by dependency order */
+@import './styles/theme.css';      /* Variables and theme definitions first */
+@import './styles/globals.css';    /* Global/base styles second */
+@import './styles/components.css'; /* Component styles last */

@@ -1,9 +1,9 @@
+// src/components/Layout/Header.jsx
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X, Sparkles, Phone } from 'lucide-react';
 
-const Header = () => {
+const Header = ({ scrolled }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -16,11 +16,19 @@ const Header = () => {
     { path: '/contact', label: 'Contact' },
   ];
 
+  const handleBookNow = () => {
+    window.open('https://wa.me/254750077424', '_blank');
+  };
+
+  const handleMenuLinkClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
-    <header className="header">
-      <div className="header-container">
+    <header className={`header ${scrolled ? 'scrolled' : ''}`}>
+      <div className="container header-container">
         {/* Logo */}
-        <Link to="/" className="logo">
+        <Link to="/" className="logo" onClick={handleMenuLinkClick}>
           <Sparkles className="logo-icon" />
           <div className="logo-text">
             <span className="logo-primary">IGNUX</span>
@@ -39,7 +47,11 @@ const Header = () => {
               {item.label}
             </Link>
           ))}
-          <button className="cta-button">
+          <button 
+            className="cta-button cta-button-primary cta-button-medium"
+            onClick={handleBookNow}
+          >
+            <Phone size={18} />
             Book Now
           </button>
         </nav>
@@ -48,34 +60,55 @@ const Header = () => {
         <button 
           className="menu-button"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
         >
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <motion.nav 
-          className="mobile-nav"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-        >
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''}`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {item.label}
+        {/* Mobile Navigation */}
+        <div className={`mobile-nav ${isMenuOpen ? 'active' : ''}`}>
+          <div className="mobile-nav-header">
+            <Link to="/" className="logo" onClick={handleMenuLinkClick}>
+              <Sparkles className="logo-icon" />
+              <div className="logo-text">
+                <span className="logo-primary">IGNUX</span>
+              </div>
             </Link>
-          ))}
-          <button className="mobile-cta-button">
-            Get Quote
+            <button 
+              className="close-button"
+              onClick={() => setIsMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+          </div>
+          
+          <div className="mobile-nav-links">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''}`}
+                onClick={handleMenuLinkClick}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+          
+          <button 
+            className="cta-button cta-button-primary cta-button-large"
+            onClick={() => {
+              handleBookNow();
+              setIsMenuOpen(false);
+            }}
+            style={{ marginTop: 'var(--spacing-8)' }}
+          >
+            <Phone size={20} />
+            Book Now
           </button>
-        </motion.nav>
-      )}
+        </div>
+      </div>
     </header>
   );
 };
